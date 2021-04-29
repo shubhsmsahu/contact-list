@@ -1,24 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import CreateContact from "./components/CreateContact";
+import ContactList from "./components/ContactList";
+import SearchContact from "./components/SearchContact";
 
 function App() {
+  const [contactList, setContactList] = useState([]);
+  const [searchList, setSearchList] = useState([]);
+
+  const handleContactList = (Name, Contact, City) => {
+    if (Name !== "" && Contact !== "" && City !== "") {
+      setContactList([
+        ...contactList,
+        {
+          Name: Name,
+          Contact: Contact,
+          City: City,
+        },
+      ]);
+    }
+  };
+  const handleSearch = (searchVal) => {
+    const list = contactList.filter((data, i) => {
+      return (
+        data.Name.includes(searchVal) ||
+        data.Contact.includes(searchVal) ||
+        data.City.includes(searchVal)
+      );
+    });
+    setSearchList(list);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1 className="navbar navbar-light bg-light">Contact List</h1>
+      <div className="App">
+        <CreateContact handleContactList={handleContactList} />
+        <SearchContact handleSearch={handleSearch} />
+        {searchList.length > 0 ? (
+          <ContactList
+            contactList={searchList}
+            setContactList={setSearchList}
+          />
+        ) : (
+          <ContactList
+            contactList={contactList}
+            setContactList={setContactList}
+          />
+        )}
+      </div>
+    </>
   );
 }
 
